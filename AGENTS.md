@@ -233,3 +233,34 @@ A task is complete when:
 - documentation is updated when necessary
 - the diff contains no unrelated modifications
 - the implementation can be explained by the developer
+
+## Task Completion Workflow
+
+A task is not considered complete merely because implementation has finished.
+
+Before marking a task as completed:
+
+1. Verify all task acceptance criteria.
+2. Run all verification required by the task and applicable AGENTS.md files.
+3. Review the implementation for scope violations.
+4. Update the task's `## Completion` section with:
+   - final status
+   - implemented changes
+   - verification results
+   - relevant notes or warnings
+5. Move the task specification from:
+   `planning/tasks/active/`
+   to:
+   `planning/tasks/completed/`
+6. Update the corresponding phase document under `planning/phases/`
+   so the completed task is marked:
+   `— ✅ Completed`
+7. Do not mark the next task as completed or in progress unless work on
+   that task has actually begun.
+8. Do not modify unrelated phases or tasks.
+9. Report all task-completion documentation changes in the final summary.
+
+A task must not be marked completed when required verification fails.
+
+Task completion documentation is part of the task itself and does not
+require a separate follow-up task.
