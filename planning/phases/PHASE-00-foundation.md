@@ -239,17 +239,17 @@ These belong to later phases.
 
 ## Planned Tasks
 
-### TASK-0001 — Repository Structure - Completed
+### TASK-0001 — Repository Structure - ✅ Completed
 
 Establish and verify the initial repository, documentation, planning,
 and context-harness structure.
 
-### TASK-0002 — Spring Boot Bootstrap - Completed
+### TASK-0002 — Spring Boot Bootstrap - ✅ Completed
 
 Initialize the Java 21 Spring Boot backend using Maven and establish
 the base backend application structure.
 
-### TASK-0003 — PostgreSQL Development Environment
+### TASK-0003 — PostgreSQL Development Environment — ✅ Completed
 
 Configure PostgreSQL for local development using Docker Compose and
 environment-based configuration.
