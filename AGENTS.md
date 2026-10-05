@@ -246,6 +246,12 @@ If implementation, review, or QA fails:
 
 Maximum automated repair cycles: 3.
 
+Persist the shared local/PR repair history in
+`.codex/repair-history/<task-id-or-branch-slug>.md` according to the
+task-execution skill. Read and reconcile it on resume, and reserve each
+substantive cycle before repair edits. Missing or uncertain history is not
+permission to reset the count.
+
 After three unsuccessful repair cycles:
 
 - stop automated repair
@@ -489,19 +495,24 @@ Examples:
 - documentation updates
 - non-destructive configuration changes
 
-### Yellow — Proceed but Highlight
+### Yellow — Proceed Automatically and Report
 
 Examples:
 
-- adding a new project dependency
-- introducing a reusable abstraction
-- changing an internal API
-- significant refactoring
-- changing database indexes
-- adding infrastructure used only in development
+- exact compatible versions of dependencies already approved by task scope
+- reversible internal abstractions or implementation patterns
+- non-destructive configuration choices
+- development-only tooling configuration
+- non-destructive database indexes
 
-The orchestrator may proceed when the task clearly requires the change, but
-must explain the decision in the final summary.
+For reversible decisions clearly within an approved task, choose the safest
+reasonable option and proceed without interrupting single-task execution.
+Record every Yellow decision and its rationale for final human review.
+
+Do not silently add out-of-scope dependencies, change approved architecture,
+upgrade a required runtime, or bypass an explicit developer restriction or
+task-specific approval gate. Stop if new information escalates a decision to
+Red. Yellow autonomy does not authorize materially different work.
 
 ### Red — Stop for Human Decision
 
@@ -523,6 +534,37 @@ When stopped:
 2. present the recommended option
 3. explain meaningful alternatives
 4. do not perform the blocked action
+
+---
+
+## Autonomous Single-Task Lifecycle
+
+A request to execute or complete one task normally includes its full local
+engineering lifecycle and PR preparation. Authoring-only, planning-only,
+read-only, local-only, and explicit no-commit/no-push/no-PR requests retain
+their narrower boundaries.
+
+After implementation verification, independent review, QA, final verification,
+and completion documentation pass, use `.codex/skills/pull-request/SKILL.md`
+to create scoped commits, push the task branch, create a Draft PR against
+`main`, mark the final verified PR Ready for Review, inspect external feedback,
+and push valid scoped repairs after rerunning any stale local gates.
+
+Do not implement directly on `main`, stage unrelated developer changes, merge
+PRs, force push without separate explicit authorization, delete protected
+branches, or begin the next task. Human review and merge remain the developer's
+responsibility; local completion does not imply PR approval or merge.
+
+Native Codex GitHub review and CodeRabbit provide external review. Do not add
+an API-key-based OpenAI GitHub Action or assume reviewer availability. Report
+pending/unavailable reviews accurately; never weaken required checks to obtain
+a passing result. Use bounded observation and the shared repair limit of three
+cycles across local and PR repairs.
+
+The normal successful terminal state is
+`TASK_EXECUTION_RESULT: READY_FOR_HUMAN_REVIEW`. Pending external review uses
+`TASK_EXECUTION_RESULT: PR_REVIEW_PENDING`; blockers and Red gates retain their
+explicit failure/decision states.
 
 ---
 
@@ -603,6 +645,10 @@ Before marking a task as completed:
    that task has actually begun.
 9. Do not modify unrelated phases or tasks.
 10. Report all task-completion documentation changes in the final summary.
+11. Continue through the PR lifecycle when authorized by the execution request.
+    Record PR state separately from local task completion. Any PR repair that
+    invalidates completion evidence must rerun affected gates and refresh that
+    evidence before returning the PR to human review.
 
 A task must not be marked completed when required verification fails,
 cannot be executed, or is inconclusive.
