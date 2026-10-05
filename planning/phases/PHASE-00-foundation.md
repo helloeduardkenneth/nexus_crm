@@ -259,7 +259,7 @@ environment-based configuration.
 Configure Flyway and verify database migrations against PostgreSQL.
 Ensure Hibernate does not automatically manage the database schema.
 
-### TASK-0005 — React + TypeScript Bootstrap
+### TASK-0005 — React + TypeScript Bootstrap — ✅ Completed
 
 Initialize the frontend using pnpm, React, TypeScript, and Vite.
 
