@@ -246,6 +246,12 @@ If implementation, review, or QA fails:
 
 Maximum automated repair cycles: 3.
 
+Persist the shared local/PR repair history in
+`.codex/repair-history/<task-id-or-branch-slug>.md` according to the
+task-execution skill. Read and reconcile it on resume, and reserve each
+substantive cycle before repair edits. Missing or uncertain history is not
+permission to reset the count.
+
 After three unsuccessful repair cycles:
 
 - stop automated repair

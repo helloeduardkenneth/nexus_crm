@@ -117,6 +117,12 @@ Do not let the reviewer repair and approve its own findings. For each repair:
 
 Use the task-execution repair counter: at most three substantive cycles total
 across local and PR repairs. Do not reset it between skills or invocations.
+Before resume/reconciliation or any repair, read the canonical
+`.codex/repair-history/<task-id-or-branch-slug>.md` ledger using task-execution
+section 14. Reconcile prior evidence if missing; uncertain history requires a
+human decision, not a zero count. Reserve the next cycle durably before edits,
+including accepted P2 fixes, then record verification outcomes and include the
+ledger in the authorized repair commit/push. Failed/interrupted attempts count.
 After exhaustion, retain the PR and report BLOCKED with attempted repairs.
 
 ## Handoff and Result

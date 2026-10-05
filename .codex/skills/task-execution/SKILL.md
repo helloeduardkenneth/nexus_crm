@@ -177,6 +177,10 @@ that predates this PR workflow. An explicit request for a different task while
 the prior task is still awaiting human handoff requires direction rather than
 silently skipping the outstanding lifecycle.
 
+Before any resumed repair, load and reconcile the durable repair ledger in
+section 14, including when the task has moved to `completed/` or its PR was
+created by a previous invocation. Do not infer a zero count from chat context.
+
 Inspect `planning/tasks/active/`.
 
 ## Exactly One Active Task
@@ -707,8 +711,47 @@ Maximum automated repair cycles:
 
 `3`
 
-Count a cycle when the orchestrator attempts a substantive repair for a
-blocking defect and returns through verification.
+Count every substantive local or PR repair attempt, including an accepted P2
+fix. Reserve its cycle before the first repair edit; an interrupted or failed
+attempt still consumes that cycle. Verification-only reruns and continued work
+on the same recorded finding do not create a new cycle. A new substantive fix
+after verification/review consumes the next cycle.
+
+## Durable Shared Repair Ledger
+
+Use one canonical repository file:
+`.codex/repair-history/<task-id-or-branch-slug>.md`. Use the task ID when one
+exists; otherwise use the selected branch name with `/` replaced by `-`.
+Store task/branch identity and PR URL when available, plus numbered cycle
+entries containing the finding/source, starting revision, status, and actual
+verification/review outcome. The consumed count is the number of reserved
+entries, including `in_progress`, failed, and interrupted entries, not merely
+successful fixes. Never delete, renumber, or reset entries during the task.
+
+Initialize an empty ledger for genuinely new work before its first repair.
+For existing work without a ledger, reconstruct prior cycles from available
+task records, Git history, PR feedback, and recorded review evidence, recording
+the sources. If history cannot be reconciled confidently, return
+`NEEDS_HUMAN_DECISION` before repairing rather than assuming zero. Conflicting
+identity, duplicate cycle numbers, or a divergent ledger also require
+reconciliation; do not overwrite another worker's history.
+
+On every invocation/resume and local-to-PR handoff, read the same ledger from
+the selected task branch and retain any newer local entries. Before each new
+attempt, verify the count is below three and persist the next numbered entry
+as `in_progress` before implementation edits. If persistence fails, return
+`BLOCKED` without attempting the repair. Only the orchestrator writes this
+ledger; delegated agents return findings/results to it.
+
+Update the entry's outcome after verification/review/QA, including blockers,
+and include the ledger in scoped commits/repair pushes when Git actions are
+authorized. Explicit no-commit/no-push instructions still apply: preserve the
+local file and report that another checkout cannot resume safely until the
+ledger is transferred. Include its path and consumed count in the final report.
+At three consumed cycles, stop before any further substantive repair and
+report `BLOCKED`; completing verification of the recorded third attempt is
+allowed. A new invocation, new PR, or successful repair does not renew the
+budget for the same task.
 
 Do not count simple command retries caused by a transient tool issue unless
 code or configuration was changed.
