@@ -1,0 +1,128 @@
+name: Codex PR Review
+
+on:
+  pull_request:
+    types:
+      - opened
+      - reopened
+      - synchronize
+      - ready_for_review
+
+concurrency:
+  group: codex-review-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
+jobs:
+  codex-review:
+    name: Codex Review
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: read
+
+    outputs:
+      final_message: ${{ steps.codex.outputs.final-message }}
+
+    steps:
+      - name: Checkout PR
+        uses: actions/checkout@v5
+        with:
+          ref: refs/pull/${{ github.event.pull_request.number }}/merge
+          fetch-depth: 0
+          persist-credentials: false
+
+      - name: Fetch PR refs
+        env:
+          PR_BASE_REF: ${{ github.event.pull_request.base.ref }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+        run: |
+          git fetch --no-tags origin \
+            "$PR_BASE_REF" \
+            "+refs/pull/$PR_NUMBER/head"
+
+      - name: Run Codex review
+        id: codex
+        uses: openai/codex-action@v1
+        with:
+          openai-api-key: ${{ secrets.OPENAI_API_KEY }}
+
+          permission-profile: ":read-only"
+
+          effort: high
+
+          prompt: |
+            Use the nexuscrm-pull-request-review skill.
+
+            Perform an independent read-only review of pull request
+            #${{ github.event.pull_request.number }}
+            in repository ${{ github.repository }}.
+
+            Base SHA:
+            ${{ github.event.pull_request.base.sha }}
+
+            Head SHA:
+            ${{ github.event.pull_request.head.sha }}
+
+            Pull request title:
+            ${{ github.event.pull_request.title }}
+
+            Pull request description:
+            ${{ github.event.pull_request.body }}
+
+            Review the complete current pull request diff from the supplied
+            base SHA to head SHA.
+
+            Read and obey all applicable AGENTS.md files and accepted ADRs.
+
+            Do not modify files.
+
+            Do not fix findings.
+
+            Do not commit, push, merge, or modify Git history.
+
+            Treat this review as independent from the implementation agent.
+
+            Return the review result using the output contract defined by the
+            nexuscrm-pull-request-review skill.
+
+            The final response must include exactly one machine-readable result:
+
+            REVIEW_RESULT: APPROVE
+
+            or
+
+            REVIEW_RESULT: REQUEST_CHANGES
+
+  post-review:
+    name: Post Codex Review
+    runs-on: ubuntu-latest
+    needs: codex-review
+
+    if: needs.codex-review.outputs.final_message != ''
+
+    permissions:
+      issues: write
+      pull-requests: write
+
+    steps:
+      - name: Post review feedback
+        uses: actions/github-script@v7
+        env:
+          CODEX_REVIEW: ${{ needs.codex-review.outputs.final_message }}
+        with:
+          github-token: ${{ github.token }}
+          script: |
+            const body = [
+              "## 🤖 Codex PR Review",
+              "",
+              `Reviewed commit: \`${context.payload.pull_request.head.sha}\``,
+              "",
+              process.env.CODEX_REVIEW
+            ].join("\n");
+
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.payload.pull_request.number,
+              body
+            });
