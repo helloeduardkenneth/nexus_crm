@@ -1,8 +1,6 @@
+import { BrowserRouter } from 'react-router'
+import AppRoutes from './app/AppRoutes'
+
 export default function App() {
-  return (
-    <main>
-      <h1>NexusCRM</h1>
-      <p>Frontend foundation is ready.</p>
-    </main>
-  )
+  return <BrowserRouter><AppRoutes /></BrowserRouter>
 }
