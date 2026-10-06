@@ -254,7 +254,7 @@ Report all dependency changes.
 
 Use:
 
-- JUnit 5
+- JUnit using Spring Boot-managed versions
 - Mockito where isolation is appropriate
 - Spring integration testing where framework behavior matters
 - PostgreSQL/Testcontainers when actual PostgreSQL behavior matters
