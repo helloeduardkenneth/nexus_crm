@@ -261,3 +261,6 @@ Notes:
 - Only TASK-0009 is marked completed. Overall Phase 00 and TASK-0010 remain
   incomplete; no next-task implementation, merge or destructive recovery.
 - Publication and current-head external review are separate PR lifecycle gates.
+- PR: https://github.com/helloeduardkenneth/nexus_crm/pull/5 against main from
+  feat/task-0009-development-documentation. Current-head external review/check
+  state is tracked on GitHub; local completion is not merge approval.
