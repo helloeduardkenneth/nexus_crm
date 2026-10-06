@@ -248,12 +248,20 @@ Verification:
   no longer existed. No alternate deletion mechanism bypassed that denial.
 - Independent code review: APPROVE, no P0–P3 findings.
 - Independent QA: PASS, all 11 criteria covered, no blockers or findings.
+- PR repair cycle 2 corrected optional POSTGRES_PORT defaulting and preserved
+  Maven failure status with subshell commands. Independent re-review approved;
+  affected QA passed all criteria, including missing/empty/custom port and CRLF,
+  nine rejected invalid cases and a private Compose consistency comparison.
+- Both exact repaired Maven command blocks passed again in developer and QA
+  runs (3 isolated + 2 real PostgreSQL integration tests, zero failures/errors/
+  skips); failure probes retained exit status 37 and the caller's directory.
+  Unchanged frontend/runtime evidence was retained, not claimed as rerun.
 - Whitespace, secret/ignore, generated-artifact, lockfile and complete scope
   checks passed; 73 protected files retained their original checksums.
 
 Notes:
 
-- One shared substantive documentation repair cycle was used; see
+- Two shared substantive documentation repair cycles were reserved; see
   .codex/repair-history/TASK-0009.md. The broader Windows selector failure
   cause remains unproven; the documented process-local option was verified.
 - No new browser rendering, interactive-watch or cross-platform verification
@@ -261,6 +269,15 @@ Notes:
 - Only TASK-0009 is marked completed. Overall Phase 00 and TASK-0010 remain
   incomplete; no next-task implementation, merge or destructive recovery.
 - Publication and current-head external review are separate PR lifecycle gates.
-- PR: https://github.com/helloeduardkenneth/nexus_crm/pull/5 against main from
-  feat/task-0009-development-documentation. Current-head external review/check
-  state is tracked on GitHub; local completion is not merge approval.
+- CodeRabbit identified optional-port handling and Maven exit-status issues.
+  Shared repair cycle 2 resolved both with new developer verification,
+  independent re-review and affected QA; external approval applies only to
+  the corresponding PR head and must be rechecked after the repair push.
+- Original PR: https://github.com/helloeduardkenneth/nexus_crm/pull/5 merged
+  head de924559 before verified repair e773551 reached the task branch.
+- Developer-approved fix-only follow-up:
+  https://github.com/helloeduardkenneth/nexus_crm/pull/6 against main from
+  feat/task-0009-development-documentation. It contains only documentation
+  corrections and their lifecycle evidence; the separate revert branch is
+  untouched. Current-head external review/check state is tracked on GitHub;
+  local completion is not merge approval.
