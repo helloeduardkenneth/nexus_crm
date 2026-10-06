@@ -13,11 +13,14 @@ Do not override JUnit to an older major version or add global Maven.
 Run isolated tests without loading `.env`, Docker or Compose:
 
 ```bash
-cd backend
-env -u POSTGRES_HOST -u POSTGRES_PORT -u POSTGRES_DB \
-    -u POSTGRES_USER -u POSTGRES_PASSWORD ./mvnw test
-cd ..
+(cd backend &&
+  env -u POSTGRES_HOST -u POSTGRES_PORT -u POSTGRES_DB \
+      -u POSTGRES_USER -u POSTGRES_PASSWORD ./mvnw test)
 ```
+
+The subshell keeps the calling shell at the repository root and preserves
+Maven's exit status. A failed directory change prevents Maven from running.
+Stop on a failed gate rather than treating a later command's success as proof.
 
 Surefire discovers `*Test` / `*Tests` (current suite: 3 tests):
 
@@ -32,10 +35,9 @@ but **does not require root `.env` or the Compose database**:
 
 ```bash
 docker version
-cd backend
-env -u POSTGRES_HOST -u POSTGRES_PORT -u POSTGRES_DB \
-    -u POSTGRES_USER -u POSTGRES_PASSWORD ./mvnw clean verify
-cd ..
+(cd backend &&
+  env -u POSTGRES_HOST -u POSTGRES_PORT -u POSTGRES_DB \
+      -u POSTGRES_USER -u POSTGRES_PASSWORD ./mvnw clean verify)
 ```
 
 Maven compiles, runs the 3 isolated tests, packages the executable JAR and

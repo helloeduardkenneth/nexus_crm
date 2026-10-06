@@ -67,9 +67,11 @@ values. Clear stale values before using Compose:
 unset POSTGRES_DB POSTGRES_USER POSTGRES_PASSWORD POSTGRES_PORT POSTGRES_HOST
 ```
 
-The following helper exports only the four required entries as literal data,
-then chooses localhost for the local backend. It accepts exactly one nonempty,
-unquoted `KEY=value` entry per required key, including CRLF files. It rejects
+The following helper exports only the four connection entries as literal data,
+then chooses localhost for the local backend. It requires exactly one nonempty,
+unquoted `KEY=value` entry for database, user and password, including CRLF files.
+`POSTGRES_PORT` is optional: omission or an empty value defaults to `5432`,
+matching Compose's host-port fallback. Any supplied key must be unique. It rejects
 whitespace, quotes, backslashes and dollar signs in those values: these can
 require Compose-specific trimming, escaping or interpolation. Punctuation
 such as `!`, `;`, `&` and parentheses remains data, never shell code.
@@ -102,12 +104,13 @@ load_backend_env() {
     esac
     values[$key]="$value"
   done < .env
-  for key in POSTGRES_DB POSTGRES_USER POSTGRES_PASSWORD POSTGRES_PORT; do
+  for key in POSTGRES_DB POSTGRES_USER POSTGRES_PASSWORD; do
     if [[ -z ${values[$key]-} ]]; then
       printf 'Missing or empty %s in .env\n' "$key" >&2
       return 1
     fi
   done
+  values[POSTGRES_PORT]="${values[POSTGRES_PORT]:-5432}"
   for key in POSTGRES_DB POSTGRES_USER POSTGRES_PASSWORD POSTGRES_PORT; do
     printf -v "$key" '%s' "${values[$key]}"
     export "$key"
