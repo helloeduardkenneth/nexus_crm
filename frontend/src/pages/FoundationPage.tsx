@@ -37,7 +37,7 @@ export default function FoundationPage() {
         {errors.previewLabel && <p id="preview-label-error" role="alert" className="text-red-700">{errors.previewLabel.message}</p>}
         <button type="submit" className="rounded bg-slate-900 px-4 py-2 text-white focus-visible:outline-2 focus-visible:outline-offset-4">Preview</button>
       </form>
-      {preview !== null && <p role="status">Submitted preview: {preview}</p>}
+      {preview !== null && <output className="block">Submitted preview: {preview}</output>}
     </div>
   )
 }
