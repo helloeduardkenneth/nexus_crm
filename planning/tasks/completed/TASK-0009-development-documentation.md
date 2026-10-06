@@ -273,6 +273,11 @@ Notes:
   Shared repair cycle 2 resolved both with new developer verification,
   independent re-review and affected QA; external approval applies only to
   the corresponding PR head and must be rechecked after the repair push.
-- PR: https://github.com/helloeduardkenneth/nexus_crm/pull/5 against main from
-  feat/task-0009-development-documentation. Current-head external review/check
-  state is tracked on GitHub; local completion is not merge approval.
+- Original PR: https://github.com/helloeduardkenneth/nexus_crm/pull/5 merged
+  head de924559 before verified repair e773551 reached the task branch.
+- Developer-approved fix-only follow-up:
+  https://github.com/helloeduardkenneth/nexus_crm/pull/6 against main from
+  feat/task-0009-development-documentation. It contains only documentation
+  corrections and their lifecycle evidence; the separate revert branch is
+  untouched. Current-head external review/check state is tracked on GitHub;
+  local completion is not merge approval.
