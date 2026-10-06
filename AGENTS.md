@@ -83,7 +83,7 @@ Primary backend domains:
 - Flyway
 - Redis
 - RabbitMQ
-- JUnit 5
+- JUnit using Spring Boot-managed versions
 - Mockito
 - Testcontainers
 

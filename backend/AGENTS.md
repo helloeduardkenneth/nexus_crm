@@ -22,7 +22,7 @@ Use:
 - Hibernate when persistence is introduced
 - PostgreSQL when database infrastructure is introduced
 - Flyway for database migrations
-- JUnit 5
+- JUnit using Spring Boot-managed versions
 - Mockito
 - Testcontainers for database integration testing
 
@@ -171,7 +171,7 @@ it is required by the active task.
 
 Use:
 
-- JUnit 5 for backend tests
+- JUnit using Spring Boot-managed versions for backend tests
 - Mockito for isolated unit tests
 - Spring Boot Test when Spring application context behavior matters
 - Testcontainers when real PostgreSQL behavior matters

@@ -47,7 +47,7 @@ By completing this phase, the project should have:
 - PostgreSQL
 - Flyway
 - Maven
-- JUnit 5
+- JUnit using Spring Boot-managed versions
 - Mockito
 - Testcontainers
 
@@ -173,7 +173,7 @@ once migrations establish the required schema.
 
 Backend:
 
-- JUnit 5
+- JUnit using Spring Boot-managed versions
 - Mockito
 - Spring Boot Test
 - Testcontainers
@@ -290,11 +290,11 @@ Configure and verify:
 
 Establish standard pnpm commands for frontend verification.
 
-### TASK-0008 — Backend Testing Foundation
+### TASK-0008 — Backend Testing Foundation — ✅ Completed
 
 Configure and verify:
 
-- JUnit 5
+- JUnit using Spring Boot-managed versions
 - Mockito
 - Spring Boot Test
 - Testcontainers
