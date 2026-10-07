@@ -2,7 +2,7 @@
 
 ## Status
 
-Not Started
+Completed
 
 ## Objective
 
@@ -42,14 +42,15 @@ By completing this phase, the project should have:
 - Java 21
 - Spring Boot
 - Spring MVC
-- Spring Data JPA
-- Hibernate
 - PostgreSQL
 - Flyway
 - Maven
 - JUnit using Spring Boot-managed versions
 - Mockito
 - Testcontainers
+
+Spring Data JPA and Hibernate remain planned backend technologies, deferred
+with developer approval to the first later task introducing domain persistence.
 
 ### Frontend
 
@@ -108,9 +109,13 @@ The backend should support:
 - environment-based configuration
 - PostgreSQL connectivity
 - Flyway migrations
-- Spring Data JPA
-- validation
 - testing
+
+With developer approval during TASK-0010 planning, Spring Data JPA/Hibernate
+are deferred to the first later domain-persistence task. Backend Bean Validation
+is deferred to the first later task introducing a request boundary. No backend
+request endpoints exist yet; these deferrals do not relax validation or
+authorization requirements when those boundaries are introduced.
 
 No business modules should be implemented yet.
 
@@ -165,7 +170,7 @@ Prefer:
 
 spring.jpa.hibernate.ddl-auto=validate
 
-once migrations establish the required schema.
+when JPA/Hibernate are introduced and migrations establish the required schema.
 
 ---
 
@@ -322,7 +327,7 @@ Document:
 Ensure a new developer can reproduce the local development
 environment from the documentation.
 
-### TASK-0010 — Phase 00 Verification
+### TASK-0010 — Phase 00 Verification — ✅ Completed
 
 Perform the final Phase 00 verification.
 
@@ -354,27 +359,27 @@ Complete the Phase 00 completion review before proceeding to Phase 01.
 
 Phase 00 is complete when:
 
-- [ ] Repository structure is established
-- [ ] Spring Boot application starts successfully
-- [ ] Java 21 is configured
-- [ ] React application starts successfully
-- [ ] pnpm is configured as the frontend package manager
-- [ ] pnpm-lock.yaml exists and is committed
-- [ ] No npm/Yarn/Bun lockfile exists
-- [ ] TypeScript strict mode is enabled
-- [ ] Oxlint is configured
-- [ ] Frontend linting with Oxlint succeeds
-- [ ] PostgreSQL runs through Docker
-- [ ] Spring Boot connects to PostgreSQL
-- [ ] Flyway migrations execute successfully
-- [ ] Hibernate does not automatically modify the schema
-- [ ] Backend unit tests execute successfully
-- [ ] PostgreSQL integration tests execute using Testcontainers
-- [ ] Frontend tests execute successfully
-- [ ] Frontend type checking succeeds
-- [ ] Frontend production build succeeds
-- [ ] Local development instructions are documented
-- [ ] No CRM business functionality has been introduced
+- [x] Repository structure is established
+- [x] Spring Boot application starts successfully
+- [x] Java 21 is configured
+- [x] React application starts successfully
+- [x] pnpm is configured as the frontend package manager
+- [x] pnpm-lock.yaml exists and is committed
+- [x] No npm/Yarn/Bun lockfile exists
+- [x] TypeScript strict mode is enabled
+- [x] Oxlint is configured
+- [x] Frontend linting with Oxlint succeeds
+- [x] PostgreSQL runs through Docker
+- [x] Spring Boot connects to PostgreSQL
+- [x] Flyway migrations execute successfully
+- [x] Hibernate does not automatically modify the schema
+- [x] Backend unit tests execute successfully
+- [x] PostgreSQL integration tests execute using Testcontainers
+- [x] Frontend tests execute successfully
+- [x] Frontend type checking succeeds
+- [x] Frontend production build succeeds
+- [x] Local development instructions are documented
+- [x] No CRM business functionality has been introduced
 
 ---
 
@@ -388,7 +393,9 @@ By the end of this phase, the developer should understand:
 - How Spring Boot configuration works
 - How environment-specific configuration works
 - How dependency injection works at a basic level
-- How Spring Data JPA connects to PostgreSQL
+- How the JDBC datasource connects to PostgreSQL and Flyway runs at startup
+- Why JPA/Hibernate and backend request validation are deferred until their
+  first corresponding domain-persistence and request-boundary tasks
 
 ### Database
 
@@ -445,12 +452,70 @@ fails.
 
 ## Completion
 
-Status: Not Started
+Status: Completed — verified locally on 2026-10-08
 
 Completed Tasks:
 
-None
+TASK-0001 through TASK-0010.
 
 Notes:
 
-None
+Fresh closeout evidence is recorded in
+[TASK-0010](../tasks/completed/TASK-0010-phase-00-verification.md).
+Local completion does not imply PR approval or merge; Phase 01 is not started.
+
+Acceptance evidence (in checklist order):
+
+1. Repository layout and tracked prerequisite records inspected.
+2. Normal packaged Spring Boot startup with real datasource/Flyway succeeded
+   within 60 seconds; owned process/port cleanup verified.
+3. Java 21.0.12.1 and Maven Wrapper 3.9.16 verified; Java 21 compilation passed.
+4. Controlled Vite startup returned HTTP 200; separate native browser inspection
+   verified React rendering and interactions with no console runtime errors.
+5. Exact pnpm 12.9.1, packageManager and pnpm scripts verified.
+6. Canonical pnpm-lock.yaml is tracked; frozen installation preserved its hash.
+7. Alternative npm/Yarn/Bun lockfile inspection found none.
+8. Both referenced TypeScript projects retain strict/composite/noEmit settings;
+   `pnpm typecheck` passed.
+9. Oxlint configuration and the zero-warning lint script inspected.
+10. `pnpm lint` passed.
+11. Compose validation, healthy PostgreSQL 18.6 startup and readiness passed;
+    discovered persistent volume survived normal shutdown.
+12. Real packaged backend established a PostgreSQL connection; read-only SQL
+    verified the configured development database and existing schema.
+13. Two real PostgreSQL Testcontainers integration tests verified fresh V1
+    migration and idempotence; development history has exactly one successful
+    V1 SQL entry and an unchanged full-history fingerprint across startup.
+14. Hibernate/JPA are absent and generic SQL initialization is disabled;
+    Flyway remains the only schema-management mechanism.
+15. Credential-unset Maven unit/smoke suite passed all three tests.
+16. Full `./mvnw clean verify` passed three Surefire and two actual PostgreSQL
+    18.6 Failsafe tests with zero failures/errors/skips and packaged the JAR.
+17. `pnpm test` passed all ten component tests.
+18. `pnpm typecheck` passed.
+19. `pnpm build` produced the production frontend artifacts successfully.
+20. README/development/testing commands matched actual scripts/defaults;
+    ten local links resolved and fifteen Bash fences passed syntax checking.
+21. Actual source/dependency/schema inspection confirmed no CRM functionality,
+    authentication or Phase 01 feature; application schema has zero tables.
+
+Completion-review items 1–10 were satisfied respectively by backend tests,
+frontend tests, strict type checking, Oxlint, healthy Compose startup, normal
+packaged backend startup, Vite plus native browser checks, migration/history
+verification, final Git diff/protected-file audit and absence of Phase 01 code.
+Independent code review returned APPROVE with no findings; independent QA
+returned PASS. All 77 protected tracked-file hashes were unchanged; final
+whitespace, secret, generated-artifact and scope checks passed.
+
+Developer-approved sequencing: JPA/Hibernate are deferred to the first later
+domain-persistence task and backend Bean Validation to the first later
+request-boundary task. Long-term architecture, validation/authorization and
+the prohibition on Hibernate schema mutation remain unchanged. Formatting
+verification used existing conventions/whitespace, not a new formatter.
+
+Warnings: initial Docker unavailability was resolved before verification.
+The first developer Vitest worker startup timed out before running tests;
+an unchanged retry and independent QA both passed all tests. No gates were
+weakened and the transient cause is unconfirmed. No substantive repairs were
+needed. Only owned runtime resources were cleaned up; persistent data and
+unrelated Docker resources were preserved.
